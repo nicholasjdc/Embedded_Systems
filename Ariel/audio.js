@@ -2,8 +2,9 @@
 x = 0;
 y = 0.1;
 z = 0;
+const espButton = document.querySelector('#connectESP');
 
-document.addEventListener('click', async () => {
+espButton.addEventListener('click', async () => {
   // Prompt user to select any serial port.
   var port = await navigator.serial.requestPort();
   // be sure to set the baudRate to match the ESP32 code
@@ -34,10 +35,16 @@ async function readLoop() {
       if(splitValue.length >=5){
         xKnobVal = parseInt(splitValue[2].split(':')[1])
         yKnobVal = parseInt(splitValue[3])
-        xChange = 1790 - xKnobVal
-        yChange = 1760 - yKnobVal
-        x+= xChange/100
-        y +=yChange/100
+        if (!isNaN(xKnobVal)){
+          xChange = 1790 - xKnobVal
+          x+= xChange/100
+
+        }
+        if (!isNaN(yKnobVal)){
+          yChange = 1760 - yKnobVal
+          y +=yChange/100
+
+        }
         console.log('x: ' +x)
         console.log('y: ' +y)
 
@@ -98,7 +105,7 @@ window.addEventListener('keydown', keyDown, false);
     console.log('x: ' +x)
     console.log('y: ' +y)
 }
-const playButton = document.querySelector('button');
+const playButton = document.querySelector('#playButton');
 
 playButton.addEventListener('click', async function () {
  
@@ -107,7 +114,6 @@ playButton.addEventListener('click', async function () {
     for(const [sample, panner] of Object.entries(panners)){
       panner.positionX.value =spMap[sample][0] -x;
       panner.positionY.value  = spMap[sample][1]-y;
-      console.log(sample)
     }
     requestAnimationFrame(move);
   };
